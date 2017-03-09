@@ -25,7 +25,7 @@ public class login extends HttpServlet {
         // check if already logged in - if so, redirect to home
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        if (username != null && username.length() > 0) {
+        if (username != null) {
             // redirect
             ServletContext context = this.getServletContext();
             String contextPath = context.getContextPath();
