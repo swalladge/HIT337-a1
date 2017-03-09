@@ -41,6 +41,7 @@ public class books extends HttpServlet {
         out.println("</head><body>");
         this.writeHeader(out);
         out.println("<a href=\"" + base + "/logout\">logout</a>");
+        out.println("<a href=\"" + base + "/book\">add book</a>");
         out.println("<p>List of books here</p>");
         out.println("</body></html>");
     }
