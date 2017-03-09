@@ -5,6 +5,7 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,10 +34,12 @@ public class edit extends HttpServlet {
         ServletContext context = this.getServletContext();
         String base = context.getContextPath();
 
+        // get admin username from context init param
+        String adminUsername = context.getInitParameter("admin");
+
         // TODO: get id from query params
 
         // TODO: show different header if admin user
-        // get admin username from context init param
         PrintWriter out = response.getWriter();
         out.println("<html><head>");
         out.println("</head><body>");
@@ -44,6 +47,7 @@ public class edit extends HttpServlet {
         out.println("<a href=\"" + base + "/logout\">logout</a>");
         out.println("<a href=\"" + base + "/\">book list</a>");
         out.println("<p>Book to edit here.</p>");
+        out.printf("<p>Max number of books allowed: %s</p>\n", this.getMaxRecords());
         out.println("</body></html>");
     }
 
@@ -54,4 +58,10 @@ public class edit extends HttpServlet {
         out.println("<h1>Edit/Add entry</h1>");
     }
         
+
+    private int getMaxRecords() {
+        ServletConfig config = this.getServletConfig();
+        int maxRecords = Integer.parseInt(config.getInitParameter("maxRecords"));
+        return maxRecords;
+    }
 }

@@ -31,8 +31,11 @@ public class books extends HttpServlet {
         ServletContext context = this.getServletContext();
         String base = context.getContextPath();
 
-        // TODO: show different header if admin user
         // get admin username from context init param
+        String adminUsername = context.getInitParameter("admin");
+
+        // TODO: show different header if admin user
+
         PrintWriter out = response.getWriter();
         out.println("<html><head>");
         out.println("</head><body>");
