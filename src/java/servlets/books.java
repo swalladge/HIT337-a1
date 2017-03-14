@@ -35,7 +35,7 @@ public class books extends HttpServlet {
 
         // get admin username from context init param
         Boolean admin = false;
-        if (username.equals(context.getInitParameter("admin"))) {
+        if (username.equals(context.getInitParameter("adminUsername"))) {
             admin = true;
         }
 
@@ -68,7 +68,7 @@ public class books extends HttpServlet {
             out.println("<p>You are the admin user and can edit books of other users</p>");
         }
 
-        this.writeBooks(out, books);
+        this.writeBooks(out, books, admin);
 
         out.println("</body></html>");
     }
@@ -77,15 +77,23 @@ public class books extends HttpServlet {
         out.println("<h1>My Book List</h1>");
     }
 
-    private void writeBooks(PrintWriter out, ArrayList<Book> bookList) {
+    private void writeBooks(PrintWriter out, ArrayList<Book> bookList, Boolean admin) {
         out.println("<table>");
-        out.println("<tr><th>Title</th><th>Author</th><th>Rating</th><th>Action</th></tr>");
+        out.println("<tr>");
+        if (admin) {
+            out.println("<th>Username</th>");
+        }
+        out.println("<th>Title</th><th>Author</th><th>Rating</th><th>Action</th></tr>");
         for (Book book : bookList) {
             out.println("<tr>");
+            if (admin) {
+                out.println("<td>" + book.getUsername() + "</td>");
+            }
             out.println("<td>" + book.getTitle() + "</td>");
             out.println("<td>" + book.getAuthor() + "</td>");
             out.println("<td>" + book.getRating().toString() + "</td>");
-            out.println("<td><a href=\"book?id=" + book.getId().toString() + "\">edit</a></td>");
+            out.println("<td><a href=\"book?id=" + book.getId() + "\">edit</a></td>");
+            // TODO: delete book link
             out.println("</tr>");
         }
         out.println("</table>");

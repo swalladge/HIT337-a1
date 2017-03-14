@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class DerbyBackend implements CatalogueInterface {
     private String jdbcConnectionString;
-    private ArrayList<Book> dummyBooks = null;
+    public static ArrayList<Book> dummyBooks = new ArrayList<Book>();
 
     public DerbyBackend(String jdbcConnectionString) {
         this.jdbcConnectionString = jdbcConnectionString;
@@ -26,6 +26,7 @@ public class DerbyBackend implements CatalogueInterface {
     @Override
     public ArrayList<Book> getAllBooks() throws Exception {
         ArrayList<Book> results = new ArrayList<Book>();
+        Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, "getting all books");
         for (Book book : dummyBooks) {
             if (book != null) {
                 results.add(book);
@@ -49,11 +50,12 @@ public class DerbyBackend implements CatalogueInterface {
 
     @Override
     public void addBook(String username, String title, String author, Integer rating) throws Exception {
-        dummyBooks.add(new Book(dummyBooks.size(), username, title, author, rating));
+        dummyBooks.add(new Book(((Integer) dummyBooks.size()).toString(), username, title, author, rating));
     }
 
     @Override
     public void updateBook(String id, String username, String title, String author, Integer rating) throws Exception {
+        Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, String.format("Updating book %s", id));
         dummyBooks.set(Integer.parseInt(id), new Book(id, username, title, author, rating));
     }
 

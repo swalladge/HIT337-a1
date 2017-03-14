@@ -39,7 +39,7 @@ public class book extends HttpServlet {
         String adminUsername = context.getInitParameter("adminUsername");
         Boolean admin = false;
 
-        if (adminUsername.equals(username)) {
+        if (username.equals(adminUsername)) {
             admin = true;
         }
 
@@ -117,9 +117,9 @@ public class book extends HttpServlet {
         String base = context.getContextPath();
 
         // get admin username from context init param
-        String adminUsername = context.getInitParameter("admin");
+        String adminUsername = context.getInitParameter("adminUsername");
         Boolean admin = false;
-        if (adminUsername.equals(username)) {
+        if (username.equals(adminUsername)) {
             admin = true;
         }
 
@@ -132,21 +132,49 @@ public class book extends HttpServlet {
         }
 
         boolean success = true;
-        String errorMessage = "FAIL";
-        // TODO: add/update in database
-        // TODO: use result below
+        String errorMessage = null;
+
+        DerbyBackend db = new DerbyBackend("todo");
+
+        // TODO: sanitize and verify
+
+        try {
+            String bookUsername = request.getParameter("username");
+            if (bookUsername == null) {
+                bookUsername = username;
+            }
+            if (! (admin || username.equals(bookUsername))) {
+                throw new RuntimeException("Not allowed to edit book belonging to this user.");
+            }
+            String bookTitle = request.getParameter("title");
+            String bookAuthor = request.getParameter("author");
+            Integer bookRating = Integer.parseInt(request.getParameter("rating"));
+            if (edit) {
+                db.updateBook(bookId, bookUsername, bookTitle, bookAuthor, bookRating);
+            } else {
+                db.addBook(bookUsername, bookTitle, bookAuthor, bookRating);
+            }
+            success = true;
+        } catch (Exception ex) {
+            Logger.getLogger(book.class.getName()).log(Level.SEVERE, null, ex);
+            success = false;
+            errorMessage = ex.getMessage();
+        }
 
         if (success) {
             response.sendRedirect(base + "/");
         } else {
             session.setAttribute("error", errorMessage);
-            response.sendRedirect(base + "/book?id=" + bookId);
+            if (edit) {
+                response.sendRedirect(base + "/book?id=" + bookId);
+            } else {
+                response.sendRedirect(base + "/book");
+            }
         }
 
     }
 
     private void writeHeader(PrintWriter out, boolean edit) {
-        // TODO: tailor header based on action
         if (edit) {
             out.println("<h1>Edit Book</h1>");
         } else {
@@ -171,13 +199,13 @@ public class book extends HttpServlet {
 
         out.println("<form action=\"\" method=\"POST\">");
         if (admin) {
-            out.println("<input id=\"username\" name=\"username\" type=\"text\" value=\"" + book.getUsername() + "\">");
+            out.println("<div><label for=\"username\">Username: </label> <input id=\"username\" name=\"username\" type=\"text\" value=\"" + book.getUsername() + "\"></div>");
         }
 
-        out.println("<input id=\"title\" name=\"title\" type=\"text\" value=\"" + book.getTitle() + "\">");
-        out.println("<input id=\"author\" name=\"author\" type=\"text\" value=\"" + book.getAuthor() + "\">");
+        out.println("<div><label for=\"title\">Title: </label> <input id=\"title\" name=\"title\" type=\"text\" value=\"" + book.getTitle() + "\"></div>");
+        out.println("<div><label for=\"author\">Author: </label> <input id=\"author\" name=\"author\" type=\"text\" value=\"" + book.getAuthor() + "\"></div>");
 
-        out.println("<select name=\"rating\" id=\"rating\">");
+        out.println("<div><label for=\"rating\">Rating: </label> <select name=\"rating\" id=\"rating\"></div>");
         for (int i = 0; i < 10; i++) {
             if (i == book.getRating()) {
                 out.printf("<option selected=\"selected\">%s</option>\n", i);
@@ -187,7 +215,7 @@ public class book extends HttpServlet {
         }
         out.println("</select>");
 
-        out.println("<input type=\"submit\" value=\"" + editText + "\">");
+        out.println("<div><input type=\"submit\" value=\"" + editText + "\"></div>");
         out.println("</form>");
     }
 
