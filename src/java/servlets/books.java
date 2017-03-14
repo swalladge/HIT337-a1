@@ -6,6 +6,8 @@ package servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,11 +70,59 @@ public class books extends HttpServlet {
             out.println("<p>You are the admin user and can edit books of other users</p>");
         }
 
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+            out.println("<p>Notice: " + message + "</p>");
+            session.removeAttribute("message");
+        }
+
         this.writeBooks(out, books, admin);
 
         out.println("</body></html>");
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        ServletContext context = this.getServletContext();
+        String contextPath = context.getContextPath();
+
+        String id = request.getParameter("id");
+        String method = request.getParameter("method");
+
+        if (id == null || method == null || !"delete".equals(method)) {
+            response.sendRedirect(contextPath);
+            return;
+        }
+
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+
+        // get admin username from context init param
+        String adminUsername = context.getInitParameter("adminUsername");
+        Boolean admin = false;
+        if (username.equals(adminUsername)) {
+            admin = true;
+        }
+
+        String message = "Successfully deleted!";
+        DerbyBackend db = new DerbyBackend("todo");
+        try {
+            Book book = db.getBook(id);
+            if (!book.getUsername().equals(username) && !admin) {
+                throw new RuntimeException("Unable to access that book!");
+            }
+            db.removeBook(id);
+        } catch (Exception e) {
+            Logger.getLogger(book.class.getName()).log(Level.INFO, e.getMessage());
+            message = e.getMessage();
+        }
+
+        session.setAttribute("message", message);
+        response.sendRedirect(contextPath);
+
+    }
     private void writeHeader(PrintWriter out) {
         out.println("<h1>My Book List</h1>");
     }
@@ -92,8 +142,14 @@ public class books extends HttpServlet {
             out.println("<td>" + book.getTitle() + "</td>");
             out.println("<td>" + book.getAuthor() + "</td>");
             out.println("<td>" + book.getRating().toString() + "</td>");
-            out.println("<td><a href=\"book?id=" + book.getId() + "\">edit</a></td>");
-            // TODO: delete book link
+            out.println("<td>");
+            out.println("<a href=\"book?id=" + book.getId() + "\">edit</a>");
+            out.println("<form style=\"display:inline;\" action=\"\" method=\"POST\">");
+            out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"hidden\" name=\"method\" value=\"delete\" >");
+            out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"hidden\" name=\"id\" value=\"" + book.getId() + "\" >");
+            out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"submit\" value=\"delete\" >");
+            out.println("</form>");
+            out.println("</td>");
             out.println("</tr>");
         }
         out.println("</table>");
