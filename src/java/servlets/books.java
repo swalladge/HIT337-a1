@@ -22,17 +22,18 @@ public class books extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // protected by filter; guaranteed to exist
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        if (username == null) {
-            response.sendRedirect("login");
-            return;
-        }
+
         ServletContext context = this.getServletContext();
         String base = context.getContextPath();
 
         // get admin username from context init param
         String adminUsername = context.getInitParameter("admin");
+//        if (username == adminUsername) {
+//
+ //       }
 
         // TODO: show different header if admin user
 

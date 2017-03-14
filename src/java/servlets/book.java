@@ -27,13 +27,10 @@ public class book extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // TODO: use servlet filter
+        // protected by filter - guaranteed
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        if (username == null) {
-            response.sendRedirect("login");
-            return;
-        }
+
         ServletContext context = this.getServletContext();
         String base = context.getContextPath();
 
