@@ -5,6 +5,7 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
@@ -139,6 +140,11 @@ public class book extends HttpServlet {
         // TODO: sanitize and verify
 
         try {
+
+            ArrayList<Book> allBooks = db.getUserBooks(username);
+            if (allBooks.size() >= getMaxRecords()) {
+                throw new RuntimeException("You already have the maximum number of books!");
+            }
             String bookUsername = request.getParameter("username");
             if (bookUsername == null) {
                 bookUsername = username;
