@@ -6,13 +6,13 @@ package utils;
  * class for storing a single book object
  */
 public class Book {
-    private Integer id;
+    private String id;
     private String username;
     private String title;
     private String author;
     private Integer rating;
 
-    public Book(Integer id, String username, String title, String author, Integer rating) {
+    public Book(String id, String username, String title, String author, Integer rating) {
         this.id = id;
         this.username = username;
         this.title = title;
@@ -20,7 +20,7 @@ public class Book {
         this.rating = rating;
     }
 
-    public Integer getId()
+    public String getId()
     {
         return this.id;
     }

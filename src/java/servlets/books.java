@@ -6,9 +6,6 @@ package servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +41,7 @@ public class books extends HttpServlet {
 
         // Logger.getLogger(books.class.getName()).log(Level.INFO, "getting db");
         DerbyBackend db = new DerbyBackend("todo");
-        ArrayList<Book> books = new ArrayList<Book>();
+        ArrayList<Book> books = new ArrayList<>();
         try {
             if (admin) {
                 books = db.getAllBooks();

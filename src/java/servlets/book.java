@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.Book;
+import utils.DerbyBackend;
 import utils.snippets;
 
 /**
@@ -34,15 +36,16 @@ public class book extends HttpServlet {
         String base = context.getContextPath();
 
         // get admin username from context init param
-        String adminUsername = context.getInitParameter("admin");
+        String adminUsername = context.getInitParameter("adminUsername");
         Boolean admin = false;
+
         if (adminUsername.equals(username)) {
             admin = true;
         }
 
         // if no book id, then we're adding a book
         // otherwise, show edit and delete forms
-        String bookId = request.getParameter("id");
+        String bookId = (String) request.getParameter("id");
         boolean edit = true;
         if (bookId == null) {
             edit = false;
@@ -50,6 +53,7 @@ public class book extends HttpServlet {
 
         Logger.getLogger(book.class.getName()).log(Level.INFO, String.format("requested book id: %s", bookId));
 
+        // print the header stuff
         PrintWriter out = response.getWriter();
         out.println("<html><head>");
         out.println("</head><body>");
@@ -59,17 +63,9 @@ public class book extends HttpServlet {
         out.println("<a href=\"" + base + "/\">book list</a>");
         snippets.writeLogoutButton(out, base);
 
-        if (admin && edit) {
-            out.println("<p>Editing PLACEHOLDER'S book</p>");
-        }
-
-        // TODO: customize based on number of books already have
-        out.printf("<p>Max number of books allowed: %s</p>\n", this.getMaxRecords());
-
-        String error = (String) session.getAttribute("error");
-        if (error != null) {
-            out.println("<p>Error: " + error + "</p>");
-            session.removeAttribute("error");
+        // different title depending on whether admin and/or editing or not
+        if (admin) {
+            out.println("<p>You are admin and can edit/add a book for any user!</p>");
         }
 
         if (edit) {
@@ -78,7 +74,34 @@ public class book extends HttpServlet {
             out.println("<p>Adding book</p>");
         }
 
-        this.writeEditForm(out, edit);
+
+        // TODO: customize based on number of books already have
+        out.printf("<p>Max number of books allowed: %s</p>\n", this.getMaxRecords());
+
+        // display an error if there is one
+        String error = (String) session.getAttribute("error");
+        if (error != null) {
+            out.println("<p>Error: " + error + "</p>");
+            session.removeAttribute("error");
+        }
+
+        DerbyBackend db = new DerbyBackend("todo");
+        Book book = null;
+        if (edit) {
+            try {
+                book = db.getBook(bookId);
+            } catch (Exception e) {
+                // TODO: handle error
+                this.writeErrorMessage(out);
+                out.println("</body></html>");
+                return;
+            }
+        } else {
+            book = new Book(null, "", "", "", 0);
+        }
+
+        // write out the form
+        this.writeEditForm(out, edit, admin, book);
 
         out.println("</body></html>");
     }
@@ -138,7 +161,7 @@ public class book extends HttpServlet {
         return maxRecords;
     }
 
-    private void writeEditForm(PrintWriter out, boolean edit) {
+    private void writeEditForm(PrintWriter out, boolean edit, boolean admin, Book book) {
         String editText;
         if (edit) {
             editText = "Update";
@@ -147,7 +170,29 @@ public class book extends HttpServlet {
         }
 
         out.println("<form action=\"\" method=\"POST\">");
+        if (admin) {
+            out.println("<input id=\"username\" name=\"username\" type=\"text\" value=\"" + book.getUsername() + "\">");
+        }
+
+        out.println("<input id=\"title\" name=\"title\" type=\"text\" value=\"" + book.getTitle() + "\">");
+        out.println("<input id=\"author\" name=\"author\" type=\"text\" value=\"" + book.getAuthor() + "\">");
+
+        out.println("<select name=\"rating\" id=\"rating\">");
+        for (int i = 0; i < 10; i++) {
+            if (i == book.getRating()) {
+                out.printf("<option selected=\"selected\">%s</option>\n", i);
+            } else {
+                out.printf("<option>%s</option>\n", i);
+            }
+        }
+        out.println("</select>");
+
         out.println("<input type=\"submit\" value=\"" + editText + "\">");
         out.println("</form>");
+    }
+
+    private void writeErrorMessage(PrintWriter out) {
+        out.println("<h2>Could not retrieve a book with the requested id!</h2>");
+        out.println("You may want to <a href=\"book\">add a new book</a>.");
     }
 }

@@ -20,7 +20,7 @@ public class DerbyBackend implements CatalogueInterface {
     public DerbyBackend(String jdbcConnectionString) {
         this.jdbcConnectionString = jdbcConnectionString;
         this.dummyBooks = new ArrayList<Book>();
-        dummyBooks.add(new Book(0, "sam", "test book 1", "nobody", 3));
+        dummyBooks.add(new Book("0", "sam", "test book 1", "nobody", 3));
     }
 
     @Override
@@ -53,18 +53,18 @@ public class DerbyBackend implements CatalogueInterface {
     }
 
     @Override
-    public void updateBook(Integer id, String username, String title, String author, Integer rating) throws Exception {
-        dummyBooks.set(id, new Book(id, username, title, author, rating));
+    public void updateBook(String id, String username, String title, String author, Integer rating) throws Exception {
+        dummyBooks.set(Integer.parseInt(id), new Book(id, username, title, author, rating));
     }
 
     @Override
-    public void removeBook(Integer id) throws Exception {
-        dummyBooks.set(id, null);
+    public void removeBook(String id) throws Exception {
+        dummyBooks.set(Integer.parseInt(id), null);
     }
 
     @Override
-    public Book getBook(Integer id) throws Exception {
-        return dummyBooks.get(id);
+    public Book getBook(String id) throws Exception {
+        return dummyBooks.get(Integer.parseInt(id));
     }
     
 }
