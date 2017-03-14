@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 public class logout extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         // remove the session value and redirect to the login page

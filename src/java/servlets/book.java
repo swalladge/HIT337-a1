@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.snippets;
 
 /**
  *
@@ -48,7 +49,7 @@ public class book extends HttpServlet {
         out.println("<html><head>");
         out.println("</head><body>");
         this.writeHeader(out);
-        out.println("<a href=\"" + base + "/logout\">logout</a>");
+        snippets.writeLogoutButton(out, base);
         out.println("<a href=\"" + base + "/\">book list</a>");
         out.printf("<p>Max number of books allowed: %s</p>\n", this.getMaxRecords());
 
