@@ -36,7 +36,7 @@ public class book extends HttpServlet {
         // get admin username from context init param
         String adminUsername = context.getInitParameter("admin");
         Boolean admin = false;
-        if (adminUsername == username) {
+        if (adminUsername.equals(username)) {
             admin = true;
         }
 
@@ -96,7 +96,7 @@ public class book extends HttpServlet {
         // get admin username from context init param
         String adminUsername = context.getInitParameter("admin");
         Boolean admin = false;
-        if (adminUsername == username) {
+        if (adminUsername.equals(username)) {
             admin = true;
         }
 
@@ -114,7 +114,7 @@ public class book extends HttpServlet {
         // TODO: use result below
 
         if (success) {
-            response.sendRedirect(base);
+            response.sendRedirect(base + "/");
         } else {
             session.setAttribute("error", errorMessage);
             response.sendRedirect(base + "/book?id=" + bookId);

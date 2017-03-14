@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import utils.snippets;
+import utils.Book;
+import utils.DerbyBackend;
 
 /**
  *
@@ -34,8 +38,21 @@ public class books extends HttpServlet {
 
         // get admin username from context init param
         Boolean admin = false;
-        if (username == context.getInitParameter("admin")) {
+        if (username.equals(context.getInitParameter("admin"))) {
             admin = true;
+        }
+
+        // Logger.getLogger(books.class.getName()).log(Level.INFO, "getting db");
+        DerbyBackend db = new DerbyBackend("todo");
+        ArrayList<Book> books = new ArrayList<Book>();
+        try {
+            if (admin) {
+                books = db.getAllBooks();
+            } else {
+                books = db.getUserBooks(username);
+            }
+        } catch (Exception e) {
+            // error
         }
 
         // TODO: show different header if admin user
@@ -54,12 +71,7 @@ public class books extends HttpServlet {
             out.println("<p>You are the admin user and can edit books of other users</p>");
         }
 
-        // TODO: get from database
-        ArrayList<Integer> bookList = new ArrayList<>();
-        bookList.add(43);
-        bookList.add(564);
-
-        this.writeBooks(out, bookList);
+        this.writeBooks(out, books);
 
         out.println("</body></html>");
     }
@@ -68,15 +80,15 @@ public class books extends HttpServlet {
         out.println("<h1>My Book List</h1>");
     }
 
-    private void writeBooks(PrintWriter out, List<Integer> bookList) {
+    private void writeBooks(PrintWriter out, ArrayList<Book> bookList) {
         out.println("<table>");
-        out.println("<tr><th>Title</th><th>Author</th></tr>");
-        for (Integer book : bookList) {
+        out.println("<tr><th>Title</th><th>Author</th><th>Rating</th><th>Action</th></tr>");
+        for (Book book : bookList) {
             out.println("<tr>");
-            out.println("<td>" + book + "</td>");
-            out.println("<td>" + book + "</td>");
-            out.println("<td>" + book + "</td>");
-            out.println("<td><a href=\"book?id=" + book +  "\">edit</a></td>");
+            out.println("<td>" + book.getTitle() + "</td>");
+            out.println("<td>" + book.getAuthor() + "</td>");
+            out.println("<td>" + book.getRating().toString() + "</td>");
+            out.println("<td><a href=\"book?id=" + book.getId().toString() + "\">edit</a></td>");
             out.println("</tr>");
         }
         out.println("</table>");
