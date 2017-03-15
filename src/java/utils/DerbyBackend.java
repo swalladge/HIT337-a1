@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author samuel
+ * @author Samuel Walladge
  */
 public class DerbyBackend implements CatalogueInterface {
     private String jdbcConnectionString;
@@ -19,6 +19,15 @@ public class DerbyBackend implements CatalogueInterface {
 
     public DerbyBackend(String jdbcConnectionString) {
         this.jdbcConnectionString = jdbcConnectionString;
+        this.init();
+    }
+
+    public DerbyBackend() {
+        this.jdbcConnectionString = "TODO: default";
+        this.init();
+    }
+
+    private void init() {
         this.dummyBooks = new ArrayList<Book>();
         dummyBooks.add(new Book("0", "sam", "test book 1", "nobody", 3));
     }
