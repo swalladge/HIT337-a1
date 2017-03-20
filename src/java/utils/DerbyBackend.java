@@ -50,6 +50,8 @@ public class DerbyBackend implements CatalogueInterface {
             s.execute("create table books (id integer not null generated always as identity (start with 1, increment by 1), username varchar(50), title varchar(100), author varchar(100), rating integer, constraint primary_key primary key (id))");
         } catch (Exception ex) {
             Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+            // check if table already created
+            // otherwise, rethrow the error
         } finally {
             try {
                 connection.close();
@@ -59,26 +61,29 @@ public class DerbyBackend implements CatalogueInterface {
         }
     }
 
-    private Connection getConnection() throws RuntimeException {
-        Connection con = null;
-        try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
-            con = DriverManager.getConnection(this.jdbcConnectionString);
-        } catch (Exception ex) {
-            throw new RuntimeException("failed to load the driver", ex);
-        }
+    private Connection getConnection() throws Exception {
+        Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+        Connection con = DriverManager.getConnection(this.jdbcConnectionString);
         return con;
     }
 
     @Override
     public ArrayList<Book> getAllBooks() throws Exception {
         ArrayList<Book> results = new ArrayList<Book>();
-        Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, "getting all books");
-        for (Book book : dummyBooks) {
-            if (book != null) {
-                results.add(book);
+        Connection connection = this.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("select * from books");
+            ResultSet res = statement.executeQuery();
+            while(res.next()){
+                results.add(new Book(res.getString("id"), res.getString("username"), res.getString("title"), res.getString("author"), res.getInt("rating")));
             }
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+            throw ex;
+        } finally {
+            connection.close();
         }
+
         return results;
     }
 
@@ -96,8 +101,7 @@ public class DerbyBackend implements CatalogueInterface {
             }
         } catch (Exception ex) {
             Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
-
-            return null;
+            throw ex;
         } finally {
             connection.close();
         }
@@ -107,7 +111,7 @@ public class DerbyBackend implements CatalogueInterface {
     }
 
     @Override
-    public boolean addBook(String username, String title, String author, Integer rating) throws Exception {
+    public void addBook(String username, String title, String author, Integer rating) throws Exception {
         Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, username + title);
         Connection connection = this.getConnection();
         try {
@@ -119,27 +123,67 @@ public class DerbyBackend implements CatalogueInterface {
             statement.execute();
         } catch (Exception ex) {
             Logger.getLogger(DerbyBackend.class.getName()).log(Level.SEVERE, ex.getMessage());
-            return false;
+            throw ex;
         } finally {
             connection.close();
         }
-        return true;
     }
 
     @Override
     public void updateBook(String id, String username, String title, String author, Integer rating) throws Exception {
-        Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, String.format("Updating book %s", id));
-        dummyBooks.set(Integer.parseInt(id), new Book(id, username, title, author, rating));
+        Connection connection = this.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("update books set username = ?, title = ?, author = ?, rating = ? where id = ?");
+            statement.setString(5, id);
+            statement.setString(1, username);
+            statement.setString(2, title);
+            statement.setString(3, author);
+            statement.setInt(4, rating);
+            boolean res = statement.execute();
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+            throw ex;
+        } finally {
+            connection.close();
+        }
+
     }
 
     @Override
     public void removeBook(String id) throws Exception {
-        dummyBooks.set(Integer.parseInt(id), null);
+        Connection connection = this.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("delete from books where id = ?");
+            statement.setString(1, id);
+            boolean res = statement.execute();
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+            throw ex;
+        } finally {
+            connection.close();
+        }
+
     }
 
     @Override
     public Book getBook(String id) throws Exception {
-        return dummyBooks.get(Integer.parseInt(id));
+        Book book = null;
+        Connection connection = this.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("select * from books where id = ?");
+            statement.setString(1, id);
+            ResultSet res = statement.executeQuery();
+            if (res.next()) {
+                book = new Book(res.getString("id"), res.getString("username"), res.getString("title"), res.getString("author"), res.getInt("rating"));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+            throw ex;
+        } finally {
+            connection.close();
+        }
+
+        return book;
     }
     
 }

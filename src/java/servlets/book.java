@@ -93,6 +93,7 @@ public class book extends HttpServlet {
                 book = db.getBook(bookId);
             } catch (Exception e) {
                 // TODO: handle error
+                out.println(e.getMessage());
                 this.writeErrorMessage(out);
                 out.println("</body></html>");
                 return;
