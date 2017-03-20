@@ -86,7 +86,7 @@ public class book extends HttpServlet {
             session.removeAttribute("error");
         }
 
-        DerbyBackend db = new DerbyBackend("todo");
+        DerbyBackend db = new DerbyBackend();
         Book book = null;
         if (edit) {
             try {
@@ -135,7 +135,7 @@ public class book extends HttpServlet {
         boolean success = true;
         String errorMessage = null;
 
-        DerbyBackend db = new DerbyBackend("todo");
+        DerbyBackend db = new DerbyBackend();
 
         // TODO: sanitize and verify
 

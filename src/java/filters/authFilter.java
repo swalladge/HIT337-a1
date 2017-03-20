@@ -6,9 +6,6 @@
 package filters;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -37,6 +34,8 @@ public class authFilter implements Filter {
             ((HttpServletResponse) response).sendRedirect("login");
             return;
         }
+
+        // TODO: save admin status to session as Boolean
 
         chain.doFilter(request, response);
 

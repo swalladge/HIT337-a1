@@ -42,7 +42,7 @@ public class books extends HttpServlet {
         }
 
         // Logger.getLogger(books.class.getName()).log(Level.INFO, "getting db");
-        DerbyBackend db = new DerbyBackend("todo");
+        DerbyBackend db = new DerbyBackend();
         ArrayList<Book> books = new ArrayList<>();
         try {
             if (admin) {
@@ -107,7 +107,7 @@ public class books extends HttpServlet {
         }
 
         String message = "Successfully deleted!";
-        DerbyBackend db = new DerbyBackend("todo");
+        DerbyBackend db = new DerbyBackend();
         try {
             Book book = db.getBook(id);
             if (!book.getUsername().equals(username) && !admin) {
