@@ -6,6 +6,7 @@
 package utils;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,38 +26,34 @@ public class DerbyBackend implements CatalogueInterface {
 
     public DerbyBackend(String jdbcConnectionString) {
         this.jdbcConnectionString = jdbcConnectionString;
-        this.init();
     }
 
     public DerbyBackend() {
         this.jdbcConnectionString = "jdbc:derby://localhost:1527/s265679HIT337A1;create=true";
-        this.init();
     }
 
-    private void init() throws RuntimeException {
+    /**
+     * Creates the table in the database if it doesn't exist
+     * @throws Exception
+     */
+    public void init() throws Exception {
+        Connection con = null;
         try {
-            Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+            con = this.getConnection();
+            DatabaseMetaData meta = con.getMetaData();
+            ResultSet res = meta.getTables(null, null, "books", null);
+            // create tables if doesn't exist
+            if (!res.next()) {
+                Statement s = con.createStatement();
+                s.execute("create table books (id integer not null generated always as identity (start with 1, increment by 1), username varchar(50), title varchar(100), author varchar(100), rating integer, constraint primary_key primary key (id))");
+            }
         } catch (Exception ex) {
-            throw new RuntimeException("failed to load the driver", ex);
-        }
-
-        Connection connection = null;
-        try {
-            // TODO: tidy this - also should only be run once
-            //       check if table exists before trying to re-create
-            //       maybe do this once in a separate method to be called by the servlet init?
-            connection = DriverManager.getConnection(this.jdbcConnectionString);
-            Statement s = connection.createStatement();
-            s.execute("create table books (id integer not null generated always as identity (start with 1, increment by 1), username varchar(50), title varchar(100), author varchar(100), rating integer, constraint primary_key primary key (id))");
-        } catch (Exception ex) {
-            Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
-            // check if table already created
-            // otherwise, rethrow the error
+            throw ex;
         } finally {
             try {
-                connection.close();
+                con.close();
             } catch (Exception ex) {
-                Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, ex.getMessage());
+                Logger.getLogger(DerbyBackend.class.getName()).log(Level.SEVERE, ex.getMessage());
             }
         }
     }

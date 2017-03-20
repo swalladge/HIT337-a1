@@ -5,18 +5,33 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.DerbyBackend;
 
 /**
  *
  * @author Samuel Walladge
  */
 public class login extends HttpServlet {
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // once off init the database
+        DerbyBackend db = new DerbyBackend();
+        try {
+            db.init();
+        } catch (Exception ex) {
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
