@@ -23,6 +23,7 @@ public class logout extends HttpServlet {
         // remove the session value and redirect to the login page
         HttpSession session = request.getSession();
         session.removeAttribute("username");
+        session.removeAttribute("isadmin");
         response.sendRedirect("login");
     }
 }
