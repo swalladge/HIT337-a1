@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,14 +29,18 @@ public class authFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        ServletContext context = filterConfig.getServletContext();
         HttpSession session = ((HttpServletRequest) request).getSession();
         String username = (String) session.getAttribute("username");
+
+        // redirect to login if not logged in
         if (username == null) {
-            ((HttpServletResponse) response).sendRedirect("login");
+            ((HttpServletResponse) response).sendRedirect(context.getContextPath() + "/login");
             return;
         }
 
-        // TODO: save admin status to session as Boolean
+        // make sure isadmin attribute set correctly
+        session.setAttribute("isadmin", username.equals(context.getInitParameter("adminUsername")));
 
         chain.doFilter(request, response);
 

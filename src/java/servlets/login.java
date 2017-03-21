@@ -24,6 +24,7 @@ public class login extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         // once off init the database
         DerbyBackend db = new DerbyBackend();
         try {
@@ -61,6 +62,7 @@ public class login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        ServletContext context = this.getServletContext();
         String name = request.getParameter("username");
 
         if (name == null || name.trim().length() < 1) {
@@ -73,8 +75,14 @@ public class login extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute("username", name.trim());
-        response.sendRedirect("./");
+        String username = name.trim();
+        session.setAttribute("username", username);
+
+        // check for admin
+        session.setAttribute("isadmin", username.equals(context.getInitParameter("adminUsername")));
+
+        // redirect to home
+        response.sendRedirect(context.getContextPath());
     }
 
     private void writeForm(PrintWriter out) {
@@ -88,5 +96,4 @@ public class login extends HttpServlet {
         out.println("<h1>Welcome to the Books Catalogue!</h1>");
         out.println("<p>Please login to continue.</p>");
     }
-        
 }

@@ -32,17 +32,12 @@ public class books extends HttpServlet {
         // protected by filter; guaranteed to exist
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
+        boolean admin = (boolean) session.getAttribute("isadmin");
 
         ServletContext context = this.getServletContext();
         String base = context.getContextPath();
+        String dbErrorMsg = null;
 
-        // get admin username from context init param
-        Boolean admin = false;
-        if (username.equals(context.getInitParameter("adminUsername"))) {
-            admin = true;
-        }
-
-        // Logger.getLogger(books.class.getName()).log(Level.INFO, "getting db");
         DerbyBackend db = new DerbyBackend();
         ArrayList<Book> books = new ArrayList<>();
         try {
@@ -52,7 +47,7 @@ public class books extends HttpServlet {
                 books = db.getUserBooks(username);
             }
         } catch (Exception e) {
-            // error
+            dbErrorMsg = "Database Error: " + e.getMessage();
         }
 
         // TODO: show different header if admin user
@@ -77,7 +72,11 @@ public class books extends HttpServlet {
             session.removeAttribute("message");
         }
 
-        this.writeBooks(out, books, admin);
+        if (dbErrorMsg != null) {
+          out.println("<p>" + dbErrorMsg + "</p>");
+        } else {
+          this.writeBooks(out, books, admin);
+        }
 
         out.println("</body></html>");
     }

@@ -41,9 +41,10 @@ public class DerbyBackend implements CatalogueInterface {
         try {
             con = this.getConnection();
             DatabaseMetaData meta = con.getMetaData();
-            ResultSet res = meta.getTables(null, null, "books", null);
+            ResultSet res = meta.getTables(null, null, "BOOKS", null);
             // create tables if doesn't exist
             if (!res.next()) {
+                Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, "table doesn't exist");
                 Statement s = con.createStatement();
                 s.execute("create table books (id integer not null generated always as identity (start with 1, increment by 1), username varchar(50), title varchar(100), author varchar(100), rating integer, constraint primary_key primary key (id))");
             }
