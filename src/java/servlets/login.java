@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import utils.DerbyBackend;
+import utils.snippets;
 
 /**
  *
@@ -51,11 +52,10 @@ public class login extends HttpServlet {
 
         // not logged in, so show the form
         PrintWriter out = response.getWriter();
-        out.println("<html><head>");
-        out.println("</head><body>");
-        this.writeHeader(out);
+        snippets.writeHead(out);
+        out.println("<p>Please login to continue.</p>");
         this.writeForm(out);
-        out.println("</body></html>");
+        snippets.writeEnd(out);
     }
 
     @Override
@@ -90,10 +90,5 @@ public class login extends HttpServlet {
         out.println("<input type=\"text\" name=\"username\" placeholder=\"username\" required>");
         out.println("<input type=\"submit\" value=\"Login\" >");
         out.println("</form>");
-    }
-
-    private void writeHeader(PrintWriter out) {
-        out.println("<h1>Welcome to the Books Catalogue!</h1>");
-        out.println("<p>Please login to continue.</p>");
     }
 }

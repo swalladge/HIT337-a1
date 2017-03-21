@@ -50,13 +50,9 @@ public class books extends HttpServlet {
             dbErrorMsg = "Database Error: " + e.getMessage();
         }
 
-        // TODO: show different header if admin user
-
         PrintWriter out = response.getWriter();
-        out.println("<html><head>");
-        out.println("</head><body>");
 
-        this.writeHeader(out);
+        snippets.writeHead(out);
 
         out.println("<a href=\"" + base + "/book\">Add Book</a>");
         snippets.writeLogoutButton(out, base);
@@ -78,7 +74,7 @@ public class books extends HttpServlet {
           this.writeBooks(out, books, admin);
         }
 
-        out.println("</body></html>");
+        snippets.writeEnd(out);
     }
 
     @Override
@@ -98,13 +94,7 @@ public class books extends HttpServlet {
 
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-
-        // get admin username from context init param
-        String adminUsername = context.getInitParameter("adminUsername");
-        Boolean admin = false;
-        if (username.equals(adminUsername)) {
-            admin = true;
-        }
+        boolean admin = (boolean) session.getAttribute("isadmin");
 
         String message = "Successfully deleted!";
         DerbyBackend db = new DerbyBackend();
@@ -123,13 +113,14 @@ public class books extends HttpServlet {
         response.sendRedirect(contextPath);
 
     }
-    private void writeHeader(PrintWriter out) {
-        out.println("<h1>My Book List</h1>");
-    }
 
     private void writeBooks(PrintWriter out, ArrayList<Book> bookList, Boolean admin) {
-        out.println("<table>");
-        out.println("<tr>");
+        if (bookList.size() == 0) {
+          out.println("<p>You have no books! Try adding one!</p>");
+          return;
+        }
+
+        out.println("<h2>My Book List</h2><table><tr>");
         if (admin) {
             out.println("<th>Username</th>");
         }
@@ -154,5 +145,4 @@ public class books extends HttpServlet {
         }
         out.println("</table>");
     }
-        
 }

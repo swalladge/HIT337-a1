@@ -18,5 +18,14 @@ public class snippets {
         out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"submit\" value=\"Logout\" >");
         out.println("</form>");
     }
-    
+
+    public static void writeHead(PrintWriter out) {
+        out.println("<html><head>");
+        out.println("</head><body>");
+        out.println("<h1>Books Catalogue</h1>");
+    }
+
+    public static void writeEnd(PrintWriter out) {
+        out.println("</body></html>");
+    }
 }
