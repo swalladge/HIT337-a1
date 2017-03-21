@@ -57,8 +57,9 @@ public class book extends HttpServlet {
         snippets.writeHead(out);
 
         // links
-        out.println("<a href=\"" + base + "/\">book list</a>");
-        snippets.writeLogoutButton(out, base);
+        snippets.writeLogoutButton(out, username, base);
+
+        out.println("<a href=\"" + base + "/\">Book List</a>");
 
         this.writeHeader(out, edit);
 

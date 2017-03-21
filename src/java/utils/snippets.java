@@ -13,14 +13,16 @@ import java.io.PrintWriter;
  */
 public class snippets {
 
-    public static void writeLogoutButton(PrintWriter out, String base) {
+    public static void writeLogoutButton(PrintWriter out, String username, String base) {
+        out.printf("<div><span>(%s)</span>", username);
         out.println("<form style=\"display:inline;\" action=\"" + base + "/logout\" method=\"POST\">");
         out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"submit\" value=\"Logout\" >");
-        out.println("</form>");
+        out.println("</form></div>");
     }
 
     public static void writeHead(PrintWriter out) {
         out.println("<html><head>");
+        out.println("<style>table{border-collapse:collapse;}th,td{border:1px solid grey;padding:10px;}</style>");
         out.println("</head><body>");
         out.println("<h1>Books Catalogue</h1>");
     }

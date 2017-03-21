@@ -54,8 +54,9 @@ public class books extends HttpServlet {
 
         snippets.writeHead(out);
 
+        snippets.writeLogoutButton(out, username, base);
+
         out.println("<a href=\"" + base + "/book\">Add Book</a>");
-        snippets.writeLogoutButton(out, base);
 
         out.println("<p>Welcome " + username + "!</p>");
         if (admin) {
@@ -120,11 +121,12 @@ public class books extends HttpServlet {
           return;
         }
 
-        out.println("<h2>My Book List</h2><table><tr>");
+        out.println("<h2>My Book List</h2>");
+        out.println("<table><tr>");
         if (admin) {
             out.println("<th>Username</th>");
         }
-        out.println("<th>Title</th><th>Author</th><th>Rating</th><th>Action</th></tr>");
+        out.println("<th>Title</th><th>Author</th><th>Rating</th><th>Actions</th></tr>");
         for (Book book : bookList) {
             out.println("<tr>");
             if (admin) {
@@ -136,8 +138,8 @@ public class books extends HttpServlet {
             out.println("<td>");
             out.println("<a href=\"book?id=" + book.getId() + "\">edit</a>");
             out.println("<form style=\"display:inline;\" action=\"\" method=\"POST\">");
-            out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"hidden\" name=\"method\" value=\"delete\" >");
-            out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"hidden\" name=\"id\" value=\"" + book.getId() + "\" >");
+            out.println("<input type=\"hidden\" name=\"method\" value=\"delete\" >");
+            out.println("<input type=\"hidden\" name=\"id\" value=\"" + book.getId() + "\" >");
             out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"submit\" value=\"delete\" >");
             out.println("</form>");
             out.println("</td>");
