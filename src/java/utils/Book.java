@@ -20,6 +20,17 @@ public class Book {
         this.rating = rating;
     }
 
+    /**
+     * default constructor for getting an empty book object to populate later
+     */
+    public Book() {
+        this.id = null;
+        this.username = "";
+        this.title = "";
+        this.author = "";
+        this.rating = 0;
+    }
+
     // note: id must be constant for a single book, so no setter provided
     public String getId()
     {

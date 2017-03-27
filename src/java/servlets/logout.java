@@ -4,6 +4,7 @@
 package servlets;
 
 import java.io.IOException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,8 @@ public class logout extends HttpServlet {
         HttpSession session = request.getSession();
         session.invalidate();
 
-        response.sendRedirect("login");
+        // redirect to the login page
+        ServletContext context = this.getServletContext();
+        response.sendRedirect(context.getContextPath() + "/login");
     }
 }
