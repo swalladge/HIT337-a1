@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import utils.snippets;
 import utils.Book;
 import utils.DerbyBackend;
+import utils.security;
 
 /**
  * Main page of the application - displays the book list and links to edit and delete them
@@ -67,7 +68,7 @@ public class books extends HttpServlet {
         out.println("<a href=\"" + base + "/book\">Add Book</a>");
 
         // write a welcome message
-        out.println("<p>Welcome " + username + "!</p>");
+        out.println("<p>Welcome " + security.escapeHtml(username) + "!</p>");
 
         // note to admins
         if (admin) {
@@ -83,7 +84,8 @@ public class books extends HttpServlet {
 
         // display a db error message if getting books failed...
         if (dbErrorMsg != null) {
-            out.println("<p>" + dbErrorMsg + "</p>");
+            // dberrormsg could contain nasty characters
+            out.println("<p>" + security.escapeHtml(dbErrorMsg) + "</p>");
         } else {
             // ... otherwise write out the table of books!
             this.writeBooks(out, books, admin);
@@ -167,13 +169,13 @@ public class books extends HttpServlet {
         for (Book book : bookList) {
             out.println("<tr>");
             if (admin) {
-                out.println("<td>" + book.getUsername() + "</td>");
+                out.println("<td>" + security.escapeHtml(book.getUsername()) + "</td>");
             }
-            out.println("<td>" + book.getTitle() + "</td>");
-            out.println("<td>" + book.getAuthor() + "</td>");
+            out.println("<td>" + security.escapeHtml(book.getTitle()) + "</td>");
+            out.println("<td>" + security.escapeHtml(book.getAuthor()) + "</td>");
             out.println("<td>" + book.getRating().toString() + "</td>");
             out.println("<td>");
-            out.println("<a href=\"book?id=" + book.getId() + "\">edit</a>");
+            out.println("<a href=\"book?id=" + security.escapeHtml(book.getId()) + "\">edit</a>");
             out.println("<form style=\"display:inline;\" method=\"POST\">");
             out.println("<input type=\"hidden\" name=\"method\" value=\"delete\" >");
             out.println("<input type=\"hidden\" name=\"id\" value=\"" + book.getId() + "\" >");

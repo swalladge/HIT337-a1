@@ -20,7 +20,7 @@ public class snippets {
      * @param base the base url of the app - required for printing links
      */
     public static void writeLogoutButton(PrintWriter out, String username, String base) {
-        out.printf("<div><span>(%s)</span>", username);
+        out.printf("<div><span>(%s)</span>", security.escapeHtml(username));
         out.println("<form style=\"display:inline;\" action=\"" + base + "/logout\" method=\"POST\">");
         out.println("<input style=\"display:inline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline;cursor:pointer;\" type=\"submit\" value=\"Logout\" >");
         out.println("</form></div>");
