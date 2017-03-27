@@ -201,13 +201,13 @@ public class book extends HttpServlet {
             editText = "Create";
         }
 
-        out.println("<form action=\"\" method=\"POST\">");
+        out.println("<form method=\"POST\">");
         if (admin) {
-            out.println("<div><label for=\"username\">Username: </label> <input id=\"username\" name=\"username\" type=\"text\" value=\"" + book.getUsername() + "\"></div>");
+            out.println("<div><label for=\"username\">Username: </label> <input id=\"username\" name=\"username\" type=\"text\" value=\"" + book.getUsername() + "\" required></div>");
         }
 
-        out.println("<div><label for=\"title\">Title: </label> <input id=\"title\" name=\"title\" type=\"text\" value=\"" + book.getTitle() + "\"></div>");
-        out.println("<div><label for=\"author\">Author: </label> <input id=\"author\" name=\"author\" type=\"text\" value=\"" + book.getAuthor() + "\"></div>");
+        out.println("<div><label for=\"title\">Title: </label> <input id=\"title\" name=\"title\" type=\"text\" value=\"" + book.getTitle() + "\" required></div>");
+        out.println("<div><label for=\"author\">Author: </label> <input id=\"author\" name=\"author\" type=\"text\" value=\"" + book.getAuthor() + "\" required></div>");
 
         out.println("<div><label for=\"rating\">Rating: </label> <select name=\"rating\" id=\"rating\"></div>");
         for (int i = 1; i <= 10; i++) {

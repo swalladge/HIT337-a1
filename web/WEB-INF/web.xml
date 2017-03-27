@@ -5,6 +5,7 @@
             30
         </session-timeout>
     </session-config>
+
     <filter>
         <filter-name>authFilter</filter-name>
         <filter-class>filters.authFilter</filter-class>
@@ -21,6 +22,7 @@
         <filter-name>authFilter</filter-name>
         <servlet-name>book</servlet-name>
     </filter-mapping>
+
     <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>servlets.login</servlet-class>
@@ -29,6 +31,7 @@
         <servlet-name>login</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>logout</servlet-name>
         <servlet-class>servlets.logout</servlet-class>
@@ -37,6 +40,7 @@
         <servlet-name>logout</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>books</servlet-name>
         <servlet-class>servlets.books</servlet-class>
@@ -45,6 +49,7 @@
         <servlet-name>books</servlet-name>
         <url-pattern/>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>book</servlet-name>
         <servlet-class>servlets.book</servlet-class>
@@ -57,6 +62,7 @@
         <servlet-name>book</servlet-name>
         <url-pattern>/book</url-pattern>
     </servlet-mapping>
+
     <context-param>
         <param-name>adminUsername</param-name>
         <param-value>admin</param-value>

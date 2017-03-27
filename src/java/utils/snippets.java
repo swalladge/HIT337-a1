@@ -31,8 +31,10 @@ public class snippets {
      * @param out 
      */
     public static void writeHead(PrintWriter out) {
-        out.println("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">");
+        out.println("<!DOCTYPE html><html lang=\"en\"><head>");
+        out.println("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><meta charset=\"utf-8\">");
         out.println("<style>table{border-collapse:collapse;}th,td{border:1px solid grey;padding:10px;}</style>");
+        out.println("<title>Book Catalogue</title>");
         out.println("</head><body>");
         out.println("<h1>Books Catalogue</h1>");
     }

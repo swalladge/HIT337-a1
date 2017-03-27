@@ -118,7 +118,7 @@ public class login extends HttpServlet {
 
     // helper method to printout the login form
     private void writeForm(PrintWriter out) {
-        out.println("<form method=\"POST\" action=\"\">");
+        out.println("<form method=\"POST\">");
         out.println("<input type=\"text\" name=\"username\" placeholder=\"username\" required>");
         out.println("<input type=\"submit\" value=\"Login\" >");
         out.println("</form>");
