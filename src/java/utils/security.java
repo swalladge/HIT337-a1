@@ -12,7 +12,7 @@ public class security {
     /**
      * Does some simple escaping for security - avoid XSS and weirdly formatted output.
      * @param s the string to be sanitized
-     * @return 
+     * @return  the sanitized string
      */
     public static String escapeHtml(String s) {
         // replace & first otherwise we get doublely sanitized text! :P

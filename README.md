@@ -7,6 +7,13 @@ Copyright © 2017 Samuel Walladge
 
 This is a simple online book catalogue system with no authentication, built using J2EE and Tomcat 7.
 
+There is a single admin user that can edit/add any book for any user, and there are an unlimited number of normal users
+who can view, edit, and add their own books (up to a customizable maximum limit).
+
+The details you can store about each book are: the title, author, and your rating on a scale of 1 to 10.
+
+It does do data validation/sanitization on untrusted input, and escapes html special characters for displayed data to
+prevent XSS.
 
 
 ## Configuring
