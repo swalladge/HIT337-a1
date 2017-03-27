@@ -12,7 +12,7 @@ who can view, edit, and add their own books (up to a customizable maximum limit)
 
 The details you can store about each book are: the title, author, and your rating on a scale of 1 to 10.
 
-It does do data validation/sanitization on untrusted input, uses prepared statements to protect against SQL injeciton,
+It does do data validation/sanitization on untrusted input, uses prepared statements to protect against SQL injection,
 and escapes html special characters for displayed data to prevent XSS.
 
 
