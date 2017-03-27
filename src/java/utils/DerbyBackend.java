@@ -132,7 +132,6 @@ public class DerbyBackend implements CatalogueInterface {
      */
     @Override
     public void addBook(String username, String title, String author, Integer rating) throws Exception {
-        Logger.getLogger(DerbyBackend.class.getName()).log(Level.INFO, username + title);
         Connection connection = this.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement("insert into books (username, title, author, rating) values (?, ?, ?, ?)");

@@ -109,7 +109,7 @@ public class login extends HttpServlet {
         String username = name.trim();
         session.setAttribute("username", username);
 
-        // check for admin
+        // check for admin and set attribute
         session.setAttribute("isadmin", username.equals(context.getInitParameter("adminUsername")));
 
         // redirect to home

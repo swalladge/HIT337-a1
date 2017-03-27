@@ -3,10 +3,10 @@ package utils;
 /**
  *
  * @author Samuel Walladge
- * class for storing a single book object
+ * class for storing a single book object - very simple with getter and setters for data
  */
 public class Book {
-    private String id;
+    private final String id;
     private String username;
     private String title;
     private String author;
@@ -20,6 +20,7 @@ public class Book {
         this.rating = rating;
     }
 
+    // note: id must be constant for a single book, so no setter provided
     public String getId()
     {
         return this.id;
