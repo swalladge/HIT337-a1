@@ -21,7 +21,7 @@ public class snippets {
     }
 
     public static void writeHead(PrintWriter out) {
-        out.println("<html><head>");
+        out.println("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">");
         out.println("<style>table{border-collapse:collapse;}th,td{border:1px solid grey;padding:10px;}</style>");
         out.println("</head><body>");
         out.println("<h1>Books Catalogue</h1>");

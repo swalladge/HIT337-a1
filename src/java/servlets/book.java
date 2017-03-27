@@ -42,7 +42,7 @@ public class book extends HttpServlet {
         DerbyBackend db = new DerbyBackend();
 
         // if no book id, then we're adding a book
-        // otherwise, show edit and delete forms
+        // otherwise, we're editing a book - show edit and delete forms
         String bookId = (String) request.getParameter("id");
         boolean edit = true;
         if (bookId == null) {
@@ -58,7 +58,6 @@ public class book extends HttpServlet {
 
         // links
         snippets.writeLogoutButton(out, username, base);
-
         out.println("<a href=\"" + base + "/\">Book List</a>");
 
         this.writeHeader(out, edit);
@@ -103,8 +102,12 @@ public class book extends HttpServlet {
             book = new Book(null, "", "", "", 0);
         }
 
-        // write out the form
-        this.writeEditForm(out, edit, admin, book);
+        if (edit && book == null) {
+          out.println("<p>Requested book not found!</p>");
+        } else {
+            // write out the form
+            this.writeEditForm(out, edit, admin, book);
+        }
 
         snippets.writeEnd(out);
     }
@@ -127,8 +130,6 @@ public class book extends HttpServlet {
         if (bookId == null) {
             edit = false;
         }
-
-        String errorMessage = null;
 
         DerbyBackend db = new DerbyBackend();
 
@@ -193,12 +194,6 @@ public class book extends HttpServlet {
 
     private void writeEditForm(PrintWriter out, boolean edit, boolean admin, Book book) {
 
-        // make sure everything is sensible
-        if (edit && book == null) {
-          out.println("Requested book not found!");
-          return;
-        }
-
         String editText;
         if (edit) {
             editText = "Update";
@@ -227,3 +222,4 @@ public class book extends HttpServlet {
         out.println("<div><input type=\"submit\" value=\"" + editText + "\"></div>");
         out.println("</form>");
     }
+}
