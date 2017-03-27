@@ -5,7 +5,7 @@ Copyright © 2017 Samuel Walladge
 
 ## About
 
-This is a simple online book catalogue system with no authentication, built usingg J2EE and Tomcat 7.
+This is a simple online book catalogue system with no authentication, built using J2EE and Tomcat 7.
 
 
 
